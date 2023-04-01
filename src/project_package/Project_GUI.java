@@ -69,17 +69,37 @@ public class Project_GUI extends Application
         //GridPane.setHgrow(btn, Priority.ALWAYS);
         //btn.setMaxWidth(Double.MAX_VALUE);        
         
-        Scene loginScrene_scene = new Scene(grid_loginScreen, Color.BEIGE);
+        Scene login_screen = new Scene(grid_loginScreen, Color.BEIGE);
         /********************************************************************************************************/
         
-        /************************************* Owner-Screen Scene *******************************************************************/
+        /******************************************************************* Owner-Screen Scene *******************************************************************/
         GridPane grid_ownerScreen = new GridPane();
+        
+        grid_ownerScreen.setAlignment(Pos.CENTER);        
+        grid_ownerScreen.setVgap(20);
+        
+        Button ownerScreen_btn1 = new Button("Books");
+        ownerScreen_btn1.setPrefSize(150, 40);
+        grid_ownerScreen.add(ownerScreen_btn1, 0, 0);
+        
+        Button ownerScreen_btn2 = new Button("Customer");
+        ownerScreen_btn2.setPrefSize(150, 40);
+        grid_ownerScreen.add(ownerScreen_btn2, 0, 1);
+        
+        Button ownerScreen_btn3 = new Button("Logout");
+        ownerScreen_btn3.setPrefSize(150, 40);
+        grid_ownerScreen.add(ownerScreen_btn3, 0, 2);       
+        
+        
+        Scene owner_start_screen = new Scene(grid_ownerScreen, Color.BEIGE);
+        /********************************************************************************************************/
+        
         
         
         
         //Stage Stuff        
         primaryStage.getIcons().add(book_png);
-        primaryStage.setScene(loginScrene_scene);
+        primaryStage.setScene(owner_start_screen);
         primaryStage.setTitle("Bookstore App");
         primaryStage.setWidth(700);
         primaryStage.setHeight(500);        
