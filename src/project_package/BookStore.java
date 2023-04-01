@@ -1,0 +1,111 @@
+package project_package;
+
+import java.util.ArrayList;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+
+public class BookStore
+{
+    private ArrayList<Book> bookComponents = new ArrayList<Book>();
+    
+    public void addBook(Book newBookComponent) {
+        bookComponents.add(newBookComponent);
+    }
+    
+    public void removeBook(int i) {
+        bookComponents.remove(i);
+    }
+    public void removeBook(Book oldBookComponent){
+        bookComponents.remove(oldBookComponent);
+    }
+    public void removeBook(String bookName){
+        for (int i = 0; i < bookComponents.size(); i++) {
+            if (bookComponents.get(i).getName().equals(bookName)) {
+                bookComponents.remove(i);
+                return;
+            }
+        }
+    }
+    
+    public Book getBookObject(int i) {
+        return bookComponents.get(i);
+    }
+    public String getBookInfo(int j){
+        return bookComponents.get(j).toString();
+    }
+    public String getBookName(int j){
+        return bookComponents.get(j).getName();
+    }
+    public double getBookPrice(int j){
+        return bookComponents.get(j).getPrice();
+    }    
+    public double getBookPrice(String bookName){
+        for (int i = 0; i < bookComponents.size(); i++) {
+            if (bookComponents.get(i).getName().equals(bookName)) {                
+                return bookComponents.get(i).getPrice();
+            }
+        }
+        return 0;
+    }
+    
+    public int getCollectionSize(){
+        return bookComponents.size();
+    }
+    @Override
+    public String toString(){
+        String str = "";
+        for (int i = 0; i < bookComponents.size(); i++) {
+            str += bookComponents.get(i).toString()+"\n";
+        }
+        return str;
+    }
+    
+    public void LoadBookFromFile() throws FileNotFoundException, IOException{
+        File bookFile = new File("books.txt");
+        FileReader fr = new FileReader(bookFile);        
+        
+        try(BufferedReader br = new BufferedReader(fr)){
+            String line;
+            while ((line = br.readLine()) != null) {
+            String[] parts = line.split("\t", 2); // Split using the tab delimiter
+            String bookName = parts[0];
+            double bookPrice = Double.parseDouble(parts[1]);
+            Book newBook = new Book(bookName, bookPrice);
+            addBook(newBook);
+            } 
+        } 
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void UpdateBookFile() throws FileNotFoundException, IOException{
+        File bookFile = new File("books.txt");
+        FileWriter fw = new FileWriter(bookFile);
+        try (BufferedWriter bw = new BufferedWriter(fw)) {
+            for (Book book : bookComponents) {                
+                String line = book.getName() + "\t" + book.getPrice();
+                bw.write(line);
+                bw.newLine();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /* //Method method to test if all the methods work.
+    public static void main(String[] args) throws IOException {
+        BookStore store = new BookStore();
+        store.LoadBookFromFile();        
+        System.out.println(store.toString());        
+        store.removeBook("Anna Karenina");
+        store.UpdateBookFile();
+        System.out.println(store.toString());
+    }*/
+}

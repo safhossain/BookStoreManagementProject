@@ -1,0 +1,33 @@
+Pride and Prejudice	19.99
+To Kill a Mockingbird	10.99
+1984	12.99
+The Great Gatsby	36.99
+One Hundred Years of Solitude	7.99
+Moby Dick	15.99
+Jane Eyre	27.99
+War and Peace	24.99
+The Catcher in the Rye	41.99
+Wuthering Heights	9.99
+The Adventures of Huckleberry Finn	8.99
+The Odyssey	14.99
+The Brothers Karamazov	49.99
+Crime and Punishment	18.99
+Heart of Darkness	25.99
+Great Expectations	31.99
+Gulliver's Travels	39.99
+The Canterbury Tales	16.99
+The Divine Comedy	29.99
+The Iliad	4.99
+Sense and Sensibility	22.99
+Animal Farm	44.99
+Lord of the Flies	45.99
+The Picture of Dorian Gray	11.99
+The Grapes of Wrath	34.99
+The Sound and the Fury	6.99
+The Sun Also Rises	33.99
+The Scarlet Letter	20.99
+The Old Man and the Sea	17.99
+The Adventures of Tom Sawyer	23.99
+Frankenstein	48.99
+Anna Karenina	38.99
+The War of the Worlds	13.99
