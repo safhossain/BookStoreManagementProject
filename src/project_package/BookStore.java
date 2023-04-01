@@ -16,6 +16,10 @@ public class BookStore
     public void addBook(Book newBookComponent) {
         bookComponents.add(newBookComponent);
     }
+    public void addBook(String newBookName, int newBookPrice){
+        Book newBook = new Book(newBookName, newBookPrice);
+        bookComponents.add(newBook);
+    }
     
     public void removeBook(int i) {
         bookComponents.remove(i);
@@ -30,11 +34,8 @@ public class BookStore
                 return;
             }
         }
-    }
+    }    
     
-    public Book getBookObject(int i) {
-        return bookComponents.get(i);
-    }
     public String getBookInfo(int j){
         return bookComponents.get(j).toString();
     }
@@ -65,8 +66,8 @@ public class BookStore
         return str;
     }
     
-    public void LoadBookFromFile() throws FileNotFoundException, IOException{
-        File bookFile = new File("books.txt");
+    public void LoadBooksFromFile(String fileName) throws FileNotFoundException, IOException{
+        File bookFile = new File(fileName);
         FileReader fr = new FileReader(bookFile);        
         
         try(BufferedReader br = new BufferedReader(fr)){
@@ -84,8 +85,8 @@ public class BookStore
         }
     }
     
-    public void UpdateBookFile() throws FileNotFoundException, IOException{
-        File bookFile = new File("books.txt");
+    public void UpdateBookFile(String fileName) throws FileNotFoundException, IOException{
+        File bookFile = new File(fileName);
         FileWriter fw = new FileWriter(bookFile);
         try (BufferedWriter bw = new BufferedWriter(fw)) {
             for (Book book : bookComponents) {                
@@ -99,13 +100,13 @@ public class BookStore
         }        
     }
     
-    /* //Method method to test if all the methods work.
+     //Method method to test if all the methods work.
     public static void main(String[] args) throws IOException {
         BookStore store = new BookStore();
-        store.LoadBookFromFile();        
+        store.LoadBooksFromFile("books.txt");
         System.out.println(store.toString());        
-        store.removeBook("Anna Karenina");
-        store.UpdateBookFile();
+        store.removeBook("Anna Karenina"); //already removed
+        store.UpdateBookFile("books.txt");
         System.out.println(store.toString());
-    }*/
+    }
 }

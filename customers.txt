@@ -1,0 +1,15 @@
+JackWilson	Blackberry9	6540
+RachelMiller	Plum3	750
+SarahClark	Banana7	2390
+TylerMitchell	Orange2	700
+OliviaTaylor	Lemon8	7900
+EthanParker	Strawberry5	4320
+EmmaAdams	Blueberry1	1090
+RyanGarcia	Peach4	250
+MadisonGreen	Apple9	2380
+AdamRussell	Raspberry7	7210
+LilyMoore	Cherry2	890
+BenjaminLee	Blackberry5	6870
+AvaAllen	Plum1	3290
+JacobDavis	Banana3	490
+SafwanHossain	whoGoesThere1	0
