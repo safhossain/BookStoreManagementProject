@@ -1,6 +1,7 @@
 package project_package;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -18,6 +19,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -291,25 +293,123 @@ public class Project_GUI extends Application
         
         ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
         
-        TableView<Book> bookTable = new TableView<>();        
+        TableView<Book> bookTableForCustomer = new TableView<>();        
         TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
         bookNameColumn.setCellValueFactory(new PropertyValueFactory<>("bookName"));
+        
         TableColumn<Book, Double> bookPriceColumn = new TableColumn<>("Book Price");
         bookPriceColumn.setCellValueFactory(new PropertyValueFactory<>("bookPrice"));
         
-        bookTable.getColumns().addAll(bookNameColumn, bookPriceColumn);
-        layout.getChildren().add(bookTable);
+        TableColumn<Book, Boolean> selectColumn = new TableColumn<>("Select");
+        selectColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
+        selectColumn.setCellFactory(param -> new CheckBoxTableCell<>());
+        selectColumn.setEditable(true);
         
-        bookTable.setItems(bookListObservable);
+        bookTableForCustomer.getColumns().addAll(bookNameColumn, bookPriceColumn, selectColumn);
+        bookTableForCustomer.setEditable(true);
+        layout.getChildren().add(bookTableForCustomer);
+        
+        bookTableForCustomer.setItems(bookListObservable);
+        
+        HBox BuyAndRemeemButtons = new HBox(10);
+        Button buyButton = new Button("Buy");
+        Button redeemButton = new Button("Redeem with Points");
+        BuyAndRemeemButtons.getChildren().addAll(buyButton, redeemButton);
+        layout.getChildren().add(BuyAndRemeemButtons);
                 
         Button customerLogOutButton = new Button("Logout");
         layout.getChildren().add(customerLogOutButton);
         
         Scene customer_start_screen = new Scene(layout, Color.BEIGE);
         
+        buyButton.setOnAction(event -> {
+            ArrayList<Book> selectedBooks = new ArrayList<>();
+            double totalCost = 0;
+            for (Book book : bookListObservable) {
+                if (book.isSelected()) {
+                    selectedBooks.add(book);
+                    totalCost += book.getBookPrice();
+                    theBooks.removeBook(book);
+                    try {
+                        theBooks.UpdateBookFile("books.txt");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            Scene customer_cost_screen = createCustomerCostScreen_Scene(selectedBooks, totalCost, customer, primaryStage, login_screen);
+            primaryStage.setScene(customer_cost_screen);
+        });
+        
+        redeemButton.setOnAction(event -> {
+            ArrayList<Book> selectedBooks = new ArrayList<>();
+            double preDiscountCAD = 0;
+            for (Book book : bookListObservable) {
+                if (book.isSelected()) {
+                    selectedBooks.add(book);
+                    preDiscountCAD += book.getBookPrice();
+                    theBooks.removeBook(book);
+                    try {
+                        theBooks.UpdateBookFile("books.txt");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            int pointsToCAD = customer.getPoints()/100;
+            double costAfterPoints = preDiscountCAD;
+            
+            if (preDiscountCAD >= pointsToCAD){
+                
+                costAfterPoints = preDiscountCAD - pointsToCAD;
+                customer.removePoints(customer.getPoints()); //all points used up in transaction
+            }
+            else{
+                customer.removePoints(preDiscountCAD*100); //some points still remaining = preTransactionPoints - preDiscountCAD*10
+                costAfterPoints = 0; //full cost handled by points
+            }            
+            
+            Scene customer_cost_screen = createCustomerCostScreen_Scene(selectedBooks, costAfterPoints, customer, primaryStage, login_screen);
+            primaryStage.setScene(customer_cost_screen);
+        });
         customerLogOutButton.setOnAction(LogOut ->{
             primaryStage.setScene(login_screen);
         });
         return customer_start_screen;
+    }
+
+    private Scene createCustomerCostScreen_Scene(ArrayList<Book> selectedBooks, double totalCost, Customer customer, Stage primaryStage, Scene login_screen) {
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        
+        Text totalCostText = new Text("Total Transaction Cost: $" + totalCost);
+        totalCostText.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        layout.getChildren().add(totalCostText);
+        
+        double earnedPoints = totalCost * 10;
+        customer.addPoints(earnedPoints);
+        try {
+            theCustomers.UpdateCustomerFile("customers.txt");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        Text pointsEarned = new Text("Points Earned: " + earnedPoints);
+        pointsEarned.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        layout.getChildren().add(pointsEarned);
+        
+        Text customerPointsAndStatusText = new Text("Current Points: " + customer.getPoints() + ", Status: " + customer.getStatus());
+        customerPointsAndStatusText.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        layout.getChildren().add(customerPointsAndStatusText);
+        
+        Button logOutBtnAfterTransaction = new Button("Logout");
+        layout.getChildren().add(logOutBtnAfterTransaction);
+
+        logOutBtnAfterTransaction.setOnAction(event -> {            
+            primaryStage.setScene(login_screen);
+        });
+        
+        Scene customer_cost_screen = new Scene(layout, Color.BEIGE);
+        return customer_cost_screen;
     }
 }

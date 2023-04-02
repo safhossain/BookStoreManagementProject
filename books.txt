@@ -31,4 +31,7 @@ The Adventures of Tom Sawyer	30.0
 Frankenstein	100.0
 The War of the Worlds	50.0
 Harry Potter	20.0
-TMU Policy 60	50.0
+TestingBook1	50
+Testing_Book_2	100
+Testing Book_3	200
+Testing Book 4	500
