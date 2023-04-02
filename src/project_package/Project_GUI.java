@@ -1,5 +1,6 @@
 package project_package;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,17 +25,45 @@ import javafx.stage.Stage;
 
 public class Project_GUI extends Application
 {
+    public Owner owner = Owner.getInstance("DaOwner", "password123");
+    private CustomerList theCustomers;    
+    private BookStore theBooks;
+            
     public static void main(String[] args){
         launch(args);
+    }
+    
+    private User verifyUser(String userName, String password) {
+        //check if user is owner
+        if (userName.equals(owner.getUserName()) && password.equals(owner.getPassword())) {
+            return owner;
+        }
+        // Check if the user is a customer
+        for (int i = 0; i < theCustomers.getCustomerListSize(); i++) {
+            Customer existingCustomer = theCustomers.getCustomerList().get(i);
+            if (userName.equals(existingCustomer.getUserName()) && password.equals(existingCustomer.getPassword())) {
+                return existingCustomer;
+            }
+        }
+        // No matching user found
+        return null;
     }
 
     @Override
     public void start(Stage primaryStage){
-        /*
-        * Heirarchy: Stage (1-->*) 
-                        Scene (1-->*) 
-                            StackPane
-        */       
+        
+        /**************************** initial loading of the customer and books info *********************************/
+        theCustomers = new CustomerList();
+        theBooks = new BookStore();
+        try {
+            theCustomers.LoadCustomersFromFile("customers.txt");
+            theBooks.LoadBooksFromFile("books.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println(theCustomers.toString());
+        System.out.println(theBooks.toString());
         
         /************************************* Login-Screen Scene *******************************************************************/
         GridPane grid_loginScreen = new GridPane();
@@ -49,25 +78,22 @@ public class Project_GUI extends Application
         book_pngImageView.setFitHeight(50);        
         grid_loginScreen.add(book_pngImageView, 0, 0);
         
-        Text scenetitle = new Text("Welcome to the BookStore App");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid_loginScreen.add(scenetitle, 0, 1, 3, 1); //(c0, r1), spans 2c/1r
+        Text loginScreenTitle = new Text("Welcome to the BookStore App");
+        loginScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        grid_loginScreen.add(loginScreenTitle, 0, 1, 3, 1); //(c0, r1), spans 2c/1r
 
-        Label userName = new Label("Username:");
-        grid_loginScreen.add(userName, 0, 2); //(c0,r2)
+        Label userNameLabel = new Label("Username:");
+        grid_loginScreen.add(userNameLabel, 0, 2); //(c0,r2)
+        TextField loginTextField = new TextField();
+        grid_loginScreen.add(loginTextField, 1, 2); //(c1,r2)
 
-        TextField userTextField = new TextField();
-        grid_loginScreen.add(userTextField, 1, 2); //(c1,r2)
-
-        Label pw = new Label("Password:");
-        grid_loginScreen.add(pw, 0, 3); //(c0, r3)
-        PasswordField pwBox = new PasswordField();
-        grid_loginScreen.add(pwBox, 1, 3); //(c1,r3)
+        Label passwordLabel = new Label("Password:");
+        grid_loginScreen.add(passwordLabel, 0, 3); //(c0, r3)
+        PasswordField loginPasswordField = new PasswordField();
+        grid_loginScreen.add(loginPasswordField, 1, 3); //(c1,r3)
         
-        Button btn = new Button("Login");
-        grid_loginScreen.add(btn, 1, 4); //(c1,r4)
-        //GridPane.setHgrow(btn, Priority.ALWAYS);
-        //btn.setMaxWidth(Double.MAX_VALUE);        
+        Button loginBtn = new Button("Login");
+        grid_loginScreen.add(loginBtn, 1, 4); //(c1,r4)        
         
         Scene login_screen = new Scene(grid_loginScreen, Color.BEIGE);
         /********************************************************************************************************/
@@ -94,16 +120,46 @@ public class Project_GUI extends Application
         Scene owner_start_screen = new Scene(grid_ownerScreen, Color.BEIGE);
         /********************************************************************************************************/
         
+        /******************************************************************* Owner-Screen Scene *******************************************************************/
+        GridPane grid_customerScreen = new GridPane();
         
+        grid_customerScreen.setAlignment(Pos.CENTER);        
+        grid_customerScreen.setVgap(20);
+                
+        Text customerScreenTitle = new Text("Welcome [name]. You have [P] points. Your status is [S]");
+        customerScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        grid_customerScreen.add(customerScreenTitle, 0, 1, 3, 1); //(c0, r1), spans 2c/1r        
         
+        Scene customer_start_screen = new Scene(grid_customerScreen, Color.BEIGE);
+        /********************************************************************************************************/
         
         //Stage Stuff        
         primaryStage.getIcons().add(book_png);
-        primaryStage.setScene(owner_start_screen);
+        primaryStage.setScene(login_screen);
         primaryStage.setTitle("Bookstore App");
         primaryStage.setWidth(700);
         primaryStage.setHeight(500);        
         primaryStage.show();
-    }
-    
+        
+        
+        /********************************************************************* GUI FUNCTIONALITY *******************************************************************/
+        loginBtn.setOnAction(loginEvent -> {
+            String usernameInput = loginTextField.getText();
+            String passwordInput = loginPasswordField.getText();
+
+            User user = verifyUser(usernameInput, passwordInput);
+            if (user != null) {
+                if (user instanceof Owner) {
+                    primaryStage.setScene(owner_start_screen);
+                } else if (user instanceof Customer) {
+                    Customer customer = (Customer) user;
+                    customerScreenTitle.setText("Welcome " + customer.getUserName() + ". You have " + customer.getPoints() + " points. Your status is " + customer.getStatus());
+                    primaryStage.setScene(customer_start_screen);
+                }
+            } 
+            else {
+                System.out.println("Wrong username and/or password");
+            }
+        });
+    }    
 }

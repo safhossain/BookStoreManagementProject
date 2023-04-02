@@ -8,10 +8,19 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.HashSet;
 
 public class CustomerList
 {
-    private ArrayList<Customer> customerList = new ArrayList<Customer>();
+    private ArrayList<Customer> customerList;
+    
+    public CustomerList(){
+        customerList  = new ArrayList<Customer>();
+    }
+    
+    public ArrayList<Customer> getCustomerList(){
+        return customerList;
+    }
     
     public void addCustomer(Customer newCustomer) {
         customerList.add(newCustomer);
@@ -64,7 +73,8 @@ public class CustomerList
             String username = parts[0];
             String password = parts[1];
             int points = Integer.parseInt(parts[2]);
-            Customer newCustomer = new Customer(username, password, points);
+            Customer newCustomer = new Customer(username, password);
+            newCustomer.setPoints(points);
             addCustomer(newCustomer);
             } 
         } 
@@ -87,7 +97,7 @@ public class CustomerList
             e.printStackTrace();
         } 
     }    
-    
+    //Method method to test if all the methods work.
     public static void main(String[] args) throws IOException {
         CustomerList allCustomers = new CustomerList();
         allCustomers.LoadCustomersFromFile("customers.txt");

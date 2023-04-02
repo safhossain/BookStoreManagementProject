@@ -11,7 +11,11 @@ import java.io.FileNotFoundException;
 
 public class BookStore
 {
-    private ArrayList<Book> bookComponents = new ArrayList<Book>();
+    private ArrayList<Book> bookComponents;
+    
+    public BookStore(){
+        bookComponents = new ArrayList<Book>();
+    }
     
     public void addBook(Book newBookComponent) {
         bookComponents.add(newBookComponent);
@@ -100,7 +104,7 @@ public class BookStore
         }        
     }
     
-     //Method method to test if all the methods work.
+    //Method method to test if all the methods work.
     public static void main(String[] args) throws IOException {
         BookStore store = new BookStore();
         store.LoadBooksFromFile("books.txt");
