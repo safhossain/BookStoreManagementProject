@@ -16,3 +16,4 @@ JacobDavis	Banana3	490
 SafwanHossain	whoGoesThere1	0
 peepee poopoo testing th3 LoadCustomersFromFile() method robustness
 YousifNasser	password89	200
+customer	password	1010

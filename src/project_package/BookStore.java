@@ -17,6 +17,10 @@ public class BookStore
         bookComponents = new ArrayList<Book>();
     }
     
+    public ArrayList<Book> getBookComponents(){
+        return bookComponents;
+    }
+    
     public void addBook(Book newBookComponent) {
         bookComponents.add(newBookComponent);
     }

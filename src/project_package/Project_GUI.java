@@ -119,7 +119,7 @@ public class Project_GUI extends Application
         grid_ownerScreen.add(ownerScreen_logoutButton, 0, 2);       
                 
         Scene owner_start_screen = new Scene(grid_ownerScreen, Color.BEIGE);
-        /********************************************************************************************************/
+        
         
         /******************************************************************* Customer-Screen Scene *******************************************************************/
         GridPane grid_customerScreen = new GridPane();
@@ -128,13 +128,16 @@ public class Project_GUI extends Application
         grid_customerScreen.setVgap(20);
                 
         Text customerScreenTitle = new Text("Welcome [name]. You have [P] points. Your status is [S]");
-        customerScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid_customerScreen.add(customerScreenTitle, 0, 1, 3, 1); //(c0, r1), spans 2c/1r        
+        customerScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        grid_customerScreen.add(customerScreenTitle, 0, 0, 2, 1);
+        
+        
         
         Scene customer_start_screen = new Scene(grid_customerScreen, Color.BEIGE);
-        /********************************************************************************************************/
         
-        //Stage Stuff        
+        
+        
+        /******************************************** Stage Stuff ************************************************************/
         primaryStage.getIcons().add(book_png);
         primaryStage.setScene(login_screen);
         primaryStage.setTitle("Bookstore App");
@@ -146,18 +149,17 @@ public class Project_GUI extends Application
         /********************************************************************* GUI FUNCTIONALITY *******************************************************************/
         loginBtn.setOnAction(loginEvent -> {
             processLogin(primaryStage, loginTextField, loginPasswordField, owner_start_screen, customer_start_screen, customerScreenTitle);
-        });
-        
-        ownerScreen_logoutButton.setOnAction(e -> {
-            primaryStage.setScene(login_screen);
-        });
-        
+        }); 
         login_screen.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 processLogin(primaryStage, loginTextField, loginPasswordField, owner_start_screen, customer_start_screen, customerScreenTitle);
                 event.consume();
             }
-        });        
+        });
+        
+        ownerScreen_logoutButton.setOnAction(logoutEvent -> {
+            primaryStage.setScene(login_screen);
+        });
     }
     
     private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
@@ -168,15 +170,12 @@ public class Project_GUI extends Application
         if (user != null) {
             if (user instanceof Owner) {
                 primaryStage.setScene(owner_start_screen);
-            } 
-            else if (user instanceof Customer) {
+            } else if (user instanceof Customer) {
                 Customer customer = (Customer) user;
                 customerScreenTitle.setText("Welcome " + customer.getUserName() + ". You have " + customer.getPoints() + " points. Your status is " + customer.getStatus());
                 primaryStage.setScene(customer_start_screen);
             }
         } 
-        else {
-            System.out.println("Wrong username and/or password");
-        }
+        else {System.out.println("Wrong username and/or password");}
     }
 }
