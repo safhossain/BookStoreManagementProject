@@ -168,7 +168,7 @@ public class Project_GUI extends Application
         
         Scene owner_book_screen = new Scene(vBox_ownerBookScreen, Color.BEIGE);
         
-        /******************************************************************* Customer-Screen Scene *******************************************************************/
+        /******************************************************************* Customer-Start-Screen Scene *******************************************************************/
         GridPane grid_customerScreen = new GridPane();
         
         grid_customerScreen.setAlignment(Pos.CENTER);        
@@ -201,11 +201,11 @@ public class Project_GUI extends Application
         
         /********************************************************************* GUI FUNCTIONALITY *******************************************************************/
         loginBtn.setOnAction(loginEvent -> {
-            processLogin(primaryStage, loginTextField, loginPasswordField, owner_start_screen, customer_start_screen, customerScreenTitle);
+            processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen, customer_start_screen, customerScreenTitle);
         }); 
         login_screen.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                processLogin(primaryStage, loginTextField, loginPasswordField, owner_start_screen, customer_start_screen, customerScreenTitle);
+                processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen, customer_start_screen, customerScreenTitle);
                 event.consume();
             }
         });
@@ -256,9 +256,13 @@ public class Project_GUI extends Application
         backButtonOwner.setOnAction(backEvent -> {
             primaryStage.setScene(owner_start_screen);
         });
+        
+        
     }
     
-    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
+    /*********************************************************************** Start Method Above ********************************************************************************/
+    
+    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene login_screen, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
         String usernameInput = loginTextField.getText();
         String passwordInput = loginPasswordField.getText();
 
@@ -267,11 +271,45 @@ public class Project_GUI extends Application
             if (user instanceof Owner) {
                 primaryStage.setScene(owner_start_screen);
             } else if (user instanceof Customer) {
-                Customer customer = (Customer) user;
-                customerScreenTitle.setText("Welcome " + customer.getUserName() + ". You have " + customer.getPoints() + " points. Your status is " + customer.getStatus());
-                primaryStage.setScene(customer_start_screen);
+                Customer customerInstance = (Customer)user;                
+                primaryStage.setScene(createCustomerStartScreen_Scene(customerInstance, primaryStage, login_screen));
             }
         } 
         else {System.out.println("Wrong username and/or password");}
+    }
+    
+    public Scene createCustomerStartScreen_Scene(Customer loggedOnCustomer, Stage primaryStage, Scene login_screen){        
+        Customer customer = loggedOnCustomer;
+        
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        
+        Text customerScreenTitle = new Text("Welcome [name]. You have [P] points. Your status is [S]");
+        customerScreenTitle.setText("Welcome " + customer.getUserName() + ". You have " + customer.getPoints() + " points. Your status is " + customer.getStatus());
+        customerScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));        
+        layout.getChildren().add(customerScreenTitle);
+        
+        ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
+        
+        TableView<Book> bookTable = new TableView<>();        
+        TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
+        bookNameColumn.setCellValueFactory(new PropertyValueFactory<>("bookName"));
+        TableColumn<Book, Double> bookPriceColumn = new TableColumn<>("Book Price");
+        bookPriceColumn.setCellValueFactory(new PropertyValueFactory<>("bookPrice"));
+        
+        bookTable.getColumns().addAll(bookNameColumn, bookPriceColumn);
+        layout.getChildren().add(bookTable);
+        
+        bookTable.setItems(bookListObservable);
+                
+        Button customerLogOutButton = new Button("Logout");
+        layout.getChildren().add(customerLogOutButton);
+        
+        Scene customer_start_screen = new Scene(layout, Color.BEIGE);
+        
+        customerLogOutButton.setOnAction(LogOut ->{
+            primaryStage.setScene(login_screen);
+        });
+        return customer_start_screen;
     }
 }
