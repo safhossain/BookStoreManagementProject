@@ -1,7 +1,11 @@
 package project_package;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,14 +15,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -120,6 +129,40 @@ public class Project_GUI extends Application
                 
         Scene owner_start_screen = new Scene(grid_ownerScreen, Color.BEIGE);
         
+        /******************************************************************* Owner-Book-Screen Scene *******************************************************************/
+        //JavaFX-specific list implementation that allows listeners to track changes in the list
+        ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
+        
+        VBox vBox_ownerBookScreen = new VBox(10); //root-node of owner_book_screen
+        
+        TableView<Book> bookTable = new TableView<>();        
+        TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
+        bookNameColumn.setCellValueFactory(new PropertyValueFactory<>("bookName"));
+        TableColumn<Book, Double> bookPriceColumn = new TableColumn<>("Book Price");
+        bookPriceColumn.setCellValueFactory(new PropertyValueFactory<>("bookPrice"));
+        
+        bookTable.getColumns().addAll(bookNameColumn, bookPriceColumn);
+        vBox_ownerBookScreen.getChildren().add(bookTable);
+        
+        bookTable.setItems(bookListObservable);
+        
+        TextField newBookToAddTextField_name = new TextField();
+        newBookToAddTextField_name.setPromptText("Name");        
+        TextField newBookToAddTextField_price = new TextField();
+        newBookToAddTextField_price.setPromptText("Price");
+        Button newBookToAdd_addButton = new Button("Add");        
+        HBox newBookToAddInputFields = new HBox(10);
+        newBookToAddInputFields.getChildren().addAll(newBookToAddTextField_name, newBookToAddTextField_price, newBookToAdd_addButton);        
+        vBox_ownerBookScreen.getChildren().add(newBookToAddInputFields);
+        
+        Button deleteButton = new Button("Delete");             
+        Button backButton_ownerBookScreen = new Button("Back");
+        
+        HBox deleteAndBackButtons = new HBox(10);
+        deleteAndBackButtons.getChildren().addAll(deleteButton, backButton_ownerBookScreen);        
+        vBox_ownerBookScreen.getChildren().add(deleteAndBackButtons);
+        
+        Scene owner_book_screen = new Scene(vBox_ownerBookScreen, Color.BEIGE);
         
         /******************************************************************* Customer-Screen Scene *******************************************************************/
         GridPane grid_customerScreen = new GridPane();
@@ -137,12 +180,18 @@ public class Project_GUI extends Application
         
         
         
+        
+        
+        
+        
+        
+        
         /******************************************** Stage Stuff ************************************************************/
         primaryStage.getIcons().add(book_png);
         primaryStage.setScene(login_screen);
         primaryStage.setTitle("Bookstore App");
         primaryStage.setWidth(700);
-        primaryStage.setHeight(500);        
+        primaryStage.setHeight(700);   
         primaryStage.show();
         
         
@@ -160,6 +209,50 @@ public class Project_GUI extends Application
         ownerScreen_logoutButton.setOnAction(logoutEvent -> {
             primaryStage.setScene(login_screen);
         });
+        
+        ownerScreen_viewBooksButton.setOnAction(booksPressEvent -> primaryStage.setScene(owner_book_screen));
+        
+        backButton_ownerBookScreen.setOnAction(deleteEvent -> {
+            Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+            if (selectedBook != null) {
+                bookListObservable.remove(selectedBook);                
+                theBooks.removeBook(selectedBook);                
+                // Save the updated book list to the books text-file
+                try {
+                    theBooks.UpdateBookFile("books.txt");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
+        newBookToAdd_addButton.setOnAction(addEvent -> {
+            String newBookName = newBookToAddTextField_name.getText();
+            double newBookPrice;
+            try {
+                newBookPrice = Double.parseDouble(newBookToAddTextField_price.getText());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid price entered.");
+                return;
+            }
+
+            Book newBook = new Book(newBookName, newBookPrice);
+            theBooks.addBook(newBook);
+            bookListObservable.add(newBook);
+            try {
+                    theBooks.UpdateBookFile("books.txt");
+            } catch (IOException ex) {
+                    ex.printStackTrace();
+            }
+
+            newBookToAddTextField_name.clear();
+            newBookToAddTextField_price.clear();
+        });
+        backButton_ownerBookScreen.setOnAction(backEvent -> {
+            primaryStage.setScene(owner_start_screen);
+        });
+        
+        
     }
     
     private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {

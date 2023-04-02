@@ -30,33 +30,33 @@ public class BookStore
     }
     
     public void removeBook(int i) {
-        bookComponents.remove(i);
+        bookComponents.remove(i);        
     }
     public void removeBook(Book oldBookComponent){
-        bookComponents.remove(oldBookComponent);
+        bookComponents.remove(oldBookComponent);        
     }
     public void removeBook(String bookName){
         for (int i = 0; i < bookComponents.size(); i++) {
-            if (bookComponents.get(i).getName().equals(bookName)) {
+            if (bookComponents.get(i).getBookName().equals(bookName)) {
                 bookComponents.remove(i);
                 return;
             }
         }
-    }    
+    }
     
     public String getBookInfo(int j){
         return bookComponents.get(j).toString();
     }
     public String getBookName(int j){
-        return bookComponents.get(j).getName();
+        return bookComponents.get(j).getBookName();
     }
     public double getBookPrice(int j){
-        return bookComponents.get(j).getPrice();
+        return bookComponents.get(j).getBookPrice();
     }    
     public double getBookPrice(String bookName){
         for (int i = 0; i < bookComponents.size(); i++) {
-            if (bookComponents.get(i).getName().equals(bookName)) {                
-                return bookComponents.get(i).getPrice();
+            if (bookComponents.get(i).getBookName().equals(bookName)) {                
+                return bookComponents.get(i).getBookPrice();
             }
         }
         return 0;
@@ -105,7 +105,7 @@ public class BookStore
         FileWriter fw = new FileWriter(bookFile);
         try (BufferedWriter bw = new BufferedWriter(fw)) {
             for (Book book : bookComponents) {                
-                String line = book.getName() + "\t" + book.getPrice();
+                String line = book.getBookName() + "\t" + book.getBookPrice();
                 bw.write(line);
                 bw.newLine();
             }

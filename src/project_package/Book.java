@@ -10,11 +10,11 @@ public class Book
         this.bookPrice = newBookPrice;
     }
    
-    public String getName() {
+    public String getBookName() {
         return this.bookName;
     }
     
-    public double getPrice() {
+    public double getBookPrice() {
         return this.bookPrice;
     }
 
