@@ -1,11 +1,14 @@
 package project_package;
 
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class Customer extends User
 {    
     //private String userName;
     //private String password;
     private int points;
-    private String status;
+    private String status;  
+    private SimpleBooleanProperty selected = new SimpleBooleanProperty(false);
 
     public Customer(String username, String password){        
         super(username, password);
@@ -23,7 +26,7 @@ public class Customer extends User
         UpdateStatus();
     }    
     
-    private void UpdateStatus() {
+    public void UpdateStatus() {
         if (this.points > 1000)
             status = "Gold"; //gold
         else 
@@ -44,6 +47,16 @@ public class Customer extends User
 
     public String getStatus() {return status;}
     //public void setStatus(String status) {this.status = status;}
+    
+    public boolean isSelected() {
+        return selected.get();
+    }
+    public void setSelected(boolean selected) {
+        this.selected.set(selected);
+    }    
+    public SimpleBooleanProperty selectedProperty() {
+        return selected;
+    }
     
     @Override
     public String toString(){

@@ -14,5 +14,5 @@ AvaAllen	Plum1	3290
 JacobDavis	Banana3	490
 SafwanHossain	whoGoesThere1	0
 YousifNasser	password89	200
-customer	password	1010
-1	1	800
+customer	password	2320
+1	1	1990

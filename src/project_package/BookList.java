@@ -9,11 +9,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
-public class BookStore
+public class BookList
 {
     private ArrayList<Book> bookComponents;
     
-    public BookStore(){
+    public BookList(){
         bookComponents = new ArrayList<Book>();
     }
     
@@ -117,7 +117,7 @@ public class BookStore
     
     //Method method to test if all the methods work.
     public static void main(String[] args) throws IOException {
-        BookStore store = new BookStore();
+        BookList store = new BookList();
         store.LoadBooksFromFile("books.txt");
         System.out.println(store.toString());        
         store.removeBook("Anna Karenina"); //already removed
