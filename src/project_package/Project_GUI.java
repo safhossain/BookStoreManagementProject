@@ -151,16 +151,20 @@ public class Project_GUI extends Application
         TextField newBookToAddTextField_price = new TextField();
         newBookToAddTextField_price.setPromptText("Price");
         Button newBookToAdd_addButton = new Button("Add");        
-        HBox newBookToAddInputFields = new HBox(10);
-        newBookToAddInputFields.getChildren().addAll(newBookToAddTextField_name, newBookToAddTextField_price, newBookToAdd_addButton);        
+        HBox newBookToAddInputFields = new HBox(10);        
+        newBookToAddInputFields.getChildren().addAll(newBookToAddTextField_name, newBookToAddTextField_price, newBookToAdd_addButton);
+        
         vBox_ownerBookScreen.getChildren().add(newBookToAddInputFields);
+                        
+        Button deleteButton = new Button("Delete");
+        //vBox_ownerBookScreen.getChildren().add(deleteButton);
         
-        Button deleteButton = new Button("Delete");             
-        Button backButton_ownerBookScreen = new Button("Back");
+        Button backButtonOwner = new Button("Back");
+        //vBox_ownerBookScreen.getChildren().add(backButtonOwner);
         
-        HBox deleteAndBackButtons = new HBox(10);
-        deleteAndBackButtons.getChildren().addAll(deleteButton, backButton_ownerBookScreen);        
-        vBox_ownerBookScreen.getChildren().add(deleteAndBackButtons);
+        HBox BackAndDeleteButtons = new HBox(10);
+        BackAndDeleteButtons.getChildren().addAll(deleteButton, backButtonOwner);
+        vBox_ownerBookScreen.getChildren().add(BackAndDeleteButtons);
         
         Scene owner_book_screen = new Scene(vBox_ownerBookScreen, Color.BEIGE);
         
@@ -191,7 +195,7 @@ public class Project_GUI extends Application
         primaryStage.setScene(login_screen);
         primaryStage.setTitle("Bookstore App");
         primaryStage.setWidth(700);
-        primaryStage.setHeight(700);   
+        primaryStage.setHeight(700); 
         primaryStage.show();
         
         
@@ -212,7 +216,7 @@ public class Project_GUI extends Application
         
         ownerScreen_viewBooksButton.setOnAction(booksPressEvent -> primaryStage.setScene(owner_book_screen));
         
-        backButton_ownerBookScreen.setOnAction(deleteEvent -> {
+        deleteButton.setOnAction(deleteEvent -> {
             Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
             if (selectedBook != null) {
                 bookListObservable.remove(selectedBook);                
@@ -248,11 +252,10 @@ public class Project_GUI extends Application
             newBookToAddTextField_name.clear();
             newBookToAddTextField_price.clear();
         });
-        backButton_ownerBookScreen.setOnAction(backEvent -> {
+        
+        backButtonOwner.setOnAction(backEvent -> {
             primaryStage.setScene(owner_start_screen);
         });
-        
-        
     }
     
     private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
