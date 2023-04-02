@@ -74,14 +74,21 @@ public class BookStore
         File bookFile = new File(fileName);
         FileReader fr = new FileReader(bookFile);        
         
+        String linePattern = "^(.+)\t([0-9]+(?:\\.[0-9]+)?)$";
+        
         try(BufferedReader br = new BufferedReader(fr)){
             String line;
             while ((line = br.readLine()) != null) {
-            String[] parts = line.split("\t", 2); // Split using the tab delimiter
-            String bookName = parts[0];
-            double bookPrice = Double.parseDouble(parts[1]);
-            Book newBook = new Book(bookName, bookPrice);
-            addBook(newBook);
+                if(line.matches(linePattern)){
+                    String[] parts = line.split("\t", 2); // Split using the tab delimiter
+                    String bookName = parts[0];
+                    double bookPrice = Double.parseDouble(parts[1]);
+                    Book newBook = new Book(bookName, bookPrice);
+                    addBook(newBook);
+                }
+                else{
+                    System.err.println("Warning: Invalid line format in books.txt: " + line);
+                }
             } 
         } 
         catch(IOException e){

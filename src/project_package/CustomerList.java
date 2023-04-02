@@ -66,17 +66,25 @@ public class CustomerList
         File customerFile = new File(fileName);
         FileReader fr = new FileReader(customerFile);        
         
+        //REGEX for the expected line format
+        String linePattern = "^[^\\t]+\\t[^\\t]+\\t\\d+$";
+        
         try(BufferedReader br = new BufferedReader(fr)){
             String line;
             while ((line = br.readLine()) != null) {
-            String[] parts = line.split("\t", 3); // Split using the tab delimiter
-            String username = parts[0];
-            String password = parts[1];
-            int points = Integer.parseInt(parts[2]);
-            Customer newCustomer = new Customer(username, password);
-            newCustomer.setPoints(points);
-            addCustomer(newCustomer);
-            } 
+                if (line.matches(linePattern)) {
+                    String[] parts = line.split("\t", 3); // Split using the tab delimiter
+                    String username = parts[0];
+                    String password = parts[1];
+                    int points = Integer.parseInt(parts[2]);
+                    Customer newCustomer = new Customer(username, password);
+                    newCustomer.setPoints(points);
+                    addCustomer(newCustomer);
+                }
+                else{
+                    System.err.println("Warning: Invalid line format in customers.txt: " + line);
+                }
+            }
         } 
         catch(IOException e){
             e.printStackTrace();

@@ -7,9 +7,12 @@ EthanParker	Strawberry5	4320
 EmmaAdams	Blueberry1	1090
 RyanGarcia	Peach4	250
 MadisonGreen	Apple9	2380
+
 AdamRussell	Raspberry7	7210
 LilyMoore	Cherry2	890
 BenjaminLee	Blackberry5	6870
 AvaAllen	Plum1	3290
 JacobDavis	Banana3	490
 SafwanHossain	whoGoesThere1	0
+peepee poopoo testing th3 LoadCustomersFromFile() method robustness
+YousifNasser	password89	200
