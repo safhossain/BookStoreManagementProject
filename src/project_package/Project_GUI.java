@@ -14,6 +14,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -25,7 +27,7 @@ import javafx.stage.Stage;
 
 public class Project_GUI extends Application
 {
-    public Owner owner = Owner.getInstance("DaOwner", "password123");
+    public Owner owner = Owner.getInstance("admin", "admin");
     private CustomerList theCustomers;    
     private BookStore theBooks;
             
@@ -104,23 +106,22 @@ public class Project_GUI extends Application
         grid_ownerScreen.setAlignment(Pos.CENTER);        
         grid_ownerScreen.setVgap(20);
         
-        Button ownerScreen_btn1 = new Button("Books");
-        ownerScreen_btn1.setPrefSize(150, 40);
-        grid_ownerScreen.add(ownerScreen_btn1, 0, 0);
+        Button ownerScreen_viewBooksButton = new Button("Books");
+        ownerScreen_viewBooksButton.setPrefSize(150, 40);
+        grid_ownerScreen.add(ownerScreen_viewBooksButton, 0, 0);
         
-        Button ownerScreen_btn2 = new Button("Customer");
-        ownerScreen_btn2.setPrefSize(150, 40);
-        grid_ownerScreen.add(ownerScreen_btn2, 0, 1);
+        Button ownerScreen_viewCustomerButton = new Button("Customer");
+        ownerScreen_viewCustomerButton.setPrefSize(150, 40);
+        grid_ownerScreen.add(ownerScreen_viewCustomerButton, 0, 1);
         
-        Button ownerScreen_btn3 = new Button("Logout");
-        ownerScreen_btn3.setPrefSize(150, 40);
-        grid_ownerScreen.add(ownerScreen_btn3, 0, 2);       
-        
-        
+        Button ownerScreen_logoutButton = new Button("Logout");
+        ownerScreen_logoutButton.setPrefSize(150, 40);
+        grid_ownerScreen.add(ownerScreen_logoutButton, 0, 2);       
+                
         Scene owner_start_screen = new Scene(grid_ownerScreen, Color.BEIGE);
         /********************************************************************************************************/
         
-        /******************************************************************* Owner-Screen Scene *******************************************************************/
+        /******************************************************************* Customer-Screen Scene *******************************************************************/
         GridPane grid_customerScreen = new GridPane();
         
         grid_customerScreen.setAlignment(Pos.CENTER);        
@@ -144,22 +145,38 @@ public class Project_GUI extends Application
         
         /********************************************************************* GUI FUNCTIONALITY *******************************************************************/
         loginBtn.setOnAction(loginEvent -> {
-            String usernameInput = loginTextField.getText();
-            String passwordInput = loginPasswordField.getText();
-
-            User user = verifyUser(usernameInput, passwordInput);
-            if (user != null) {
-                if (user instanceof Owner) {
-                    primaryStage.setScene(owner_start_screen);
-                } else if (user instanceof Customer) {
-                    Customer customer = (Customer) user;
-                    customerScreenTitle.setText("Welcome " + customer.getUserName() + ". You have " + customer.getPoints() + " points. Your status is " + customer.getStatus());
-                    primaryStage.setScene(customer_start_screen);
-                }
-            } 
-            else {
-                System.out.println("Wrong username and/or password");
-            }
+            processLogin(primaryStage, loginTextField, loginPasswordField, owner_start_screen, customer_start_screen, customerScreenTitle);
         });
-    }    
+        
+        ownerScreen_logoutButton.setOnAction(e -> {
+            primaryStage.setScene(login_screen);
+        });
+        
+        login_screen.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                processLogin(primaryStage, loginTextField, loginPasswordField, owner_start_screen, customer_start_screen, customerScreenTitle);
+                event.consume();
+            }
+        });        
+    }
+    
+    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
+        String usernameInput = loginTextField.getText();
+        String passwordInput = loginPasswordField.getText();
+
+        User user = verifyUser(usernameInput, passwordInput);
+        if (user != null) {
+            if (user instanceof Owner) {
+                primaryStage.setScene(owner_start_screen);
+            } 
+            else if (user instanceof Customer) {
+                Customer customer = (Customer) user;
+                customerScreenTitle.setText("Welcome " + customer.getUserName() + ". You have " + customer.getPoints() + " points. Your status is " + customer.getStatus());
+                primaryStage.setScene(customer_start_screen);
+            }
+        } 
+        else {
+            System.out.println("Wrong username and/or password");
+        }
+    }
 }
