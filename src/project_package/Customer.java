@@ -7,7 +7,7 @@ public class Customer extends User
     //private String userName;
     //private String password;
     private int points;
-    private String status;  
+    private String status = "Silver";  
     private SimpleBooleanProperty selected = new SimpleBooleanProperty(false);
 
     public Customer(String username, String password){        
