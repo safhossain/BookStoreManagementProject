@@ -31,15 +31,7 @@ The Adventures of Tom Sawyer	30.0
 Frankenstein	100.0
 The War of the Worlds	50.0
 Harry Potter	20.0
-TestingBook1	50.0
-Testing_Book2	100.0
-Testing_Book_3	200.0
-Testing Book 4	500.0
-test1	10.0
-test2	20.0
-test3	30.0
-test4	40.0
-test5	50.0
-test6	60.0
-test7	70.0
-test8	80.0
+The Chronicles of Narnia	50.0
+Brave New World	100.0
+The Hitchhiker's Guide to the Galaxy	200.0
+The Lord of the Rings	500.0

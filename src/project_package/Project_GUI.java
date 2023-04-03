@@ -230,45 +230,22 @@ public class Project_GUI extends Application
         vBox_ownerCustomerScreen.getChildren().add(BackAndDeleteButtons2);
         
         Scene owner_customer_screen = new Scene(vBox_ownerCustomerScreen, Color.BEIGE);
-        
-        /******************************************************************* Customer-Start-Screen Scene *******************************************************************/
-        GridPane grid_customerScreen = new GridPane();
-        
-        grid_customerScreen.setAlignment(Pos.CENTER);        
-        grid_customerScreen.setVgap(20);
-                
-        Text customerScreenTitle = new Text("Welcome [name]. You have [P] points. Your status is [S]");
-        customerScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-        grid_customerScreen.add(customerScreenTitle, 0, 0, 2, 1);
-        
-        
-        
-        Scene customer_start_screen = new Scene(grid_customerScreen, Color.BEIGE);
-        
-        
-        
-        
-        
-        
-        
-        
-        
+      
         /******************************************** Stage Stuff ************************************************************/
         primaryStage.getIcons().add(book_png);
         primaryStage.setScene(login_screen);
         primaryStage.setTitle("Bookstore App");
         primaryStage.setWidth(700);
         primaryStage.setHeight(700); 
-        primaryStage.show();
-        
+        primaryStage.show();        
         
         /********************************************************************* GUI FUNCTIONALITY *******************************************************************/
         loginBtn.setOnAction(loginEvent -> {
-            processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen, customer_start_screen, customerScreenTitle);
+            processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen);
         }); 
         login_screen.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen, customer_start_screen, customerScreenTitle);
+                processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen);
                 event.consume();
             }
         });
@@ -348,18 +325,45 @@ public class Project_GUI extends Application
             String newUserName = newCustomerToAddTextField_username.getText();
             String newPassword = newCustomerToAddTextField_password.getText();
 
-            Customer newCustomer = new Customer(newUserName, newPassword);
-            newCustomer.UpdateStatus();
-            theCustomers.addCustomer(newCustomer);
-            customerListObservable.add(newCustomer);
-            try {
-                    theCustomers.UpdateCustomerFile("customers.txt");
-            } catch (IOException ex) {
-                    ex.printStackTrace();
-            }
+//            Customer newCustomer = new Customer(newUserName, newPassword);
+//            newCustomer.UpdateStatus();
+//            theCustomers.addCustomer(newCustomer);
+//            customerListObservable.add(newCustomer);
+//            try {
+//                    theCustomers.UpdateCustomerFile("customers.txt");
+//            } catch (IOException ex) {
+//                    ex.printStackTrace();
+//            }
 
-            newCustomerToAddTextField_username.clear();
-            newCustomerToAddTextField_password.clear();
+            boolean temp = true;
+
+            for (int i = 0; i < theCustomers.getCustomerListSize(); i++) {
+                Customer existingCustomer = theCustomers.getCustomerList().get(i);
+                if (newUserName.trim().equals(existingCustomer.getUserName())) {
+                    System.out.println("Username already exists");
+                    temp = false;
+                }
+                if (newPassword.length() < 5){
+                    System.out.println("Password too short. Minimum 5 characters");
+                    temp = false;
+                }
+                if (temp == false)
+                    break;                
+            }
+            
+            if (temp == true) {
+                Customer newCustomer = new Customer(newUserName, newPassword);
+                theCustomers.addCustomer(newCustomer);
+                customerListObservable.add(newCustomer);
+                try {
+                        theCustomers.UpdateCustomerFile("customers.txt");
+                } catch (IOException ex) {
+                        ex.printStackTrace();
+                }
+                newCustomerToAddTextField_username.clear();
+                newCustomerToAddTextField_password.clear();
+            }
+            
         });
         
         //Return to previous scene button//
@@ -370,7 +374,7 @@ public class Project_GUI extends Application
     
     /*********************************************************************** Start Method Above ********************************************************************************/
     
-    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene login_screen, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
+    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene login_screen, Scene owner_start_screen) {
         String usernameInput = loginTextField.getText();
         String passwordInput = loginPasswordField.getText();
 
