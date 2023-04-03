@@ -39,9 +39,9 @@ import javafx.stage.Stage;
 public class Project_GUI extends Application
 {
     public Owner owner = Owner.getInstance("admin", "admin");
-    private CustomerList theCustomers;
-    private BookList theBooks;
-                
+    private CustomerList theCustomers;    
+    private BookStore theBooks;
+            
     public static void main(String[] args){
         launch(args);
     }
@@ -67,7 +67,7 @@ public class Project_GUI extends Application
         
         /**************************** initial loading of the customer and books info *********************************/
         theCustomers = new CustomerList();
-        theBooks = new BookList();
+        theBooks = new BookStore();
         try {
             theCustomers.LoadCustomersFromFile("customers.txt");
             theBooks.LoadBooksFromFile("books.txt");
@@ -137,17 +137,24 @@ public class Project_GUI extends Application
         
         VBox vBox_ownerBookScreen = new VBox(10); //root-node of owner_book_screen
         
+        //Creating the book table//
         TableView<Book> bookTable = new TableView<>();        
+        bookTable.setPrefSize(200, 400); 
+        //Creating the book name column//
         TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
         bookNameColumn.setCellValueFactory(new PropertyValueFactory<>("bookName"));
+        
+        //Creating the book price column//
         TableColumn<Book, Double> bookPriceColumn = new TableColumn<>("Book Price");
         bookPriceColumn.setCellValueFactory(new PropertyValueFactory<>("bookPrice"));
         
+        //Populating the table//
         bookTable.getColumns().addAll(bookNameColumn, bookPriceColumn);
         vBox_ownerBookScreen.getChildren().add(bookTable);
         
         bookTable.setItems(bookListObservable);
         
+        //Prompts for creating a new book and adding it to the table//
         TextField newBookToAddTextField_name = new TextField();
         newBookToAddTextField_name.setPromptText("Name");        
         TextField newBookToAddTextField_price = new TextField();
@@ -157,57 +164,90 @@ public class Project_GUI extends Application
         newBookToAddInputFields.getChildren().addAll(newBookToAddTextField_name, newBookToAddTextField_price, newBookToAdd_addButton);
         
         vBox_ownerBookScreen.getChildren().add(newBookToAddInputFields);
-                        
-        Button deleteBookButton = new Button("Delete");
-        //vBox_ownerBookScreen.getChildren().add(deleteButton);
         
-        Button backBtn_fromOwnerBookScreen = new Button("Back");
-        //vBox_ownerBookScreen.getChildren().add(backButtonOwner);
+        //Delete button for deleting a book from the table//                
+        Button deleteButton = new Button("Delete");
+        
+        //Button for returning to the previous scene//
+        Button backButtonOwner = new Button("Back");
         
         HBox BackAndDeleteButtons = new HBox(10);
-        BackAndDeleteButtons.getChildren().addAll(deleteBookButton, backBtn_fromOwnerBookScreen);
+        BackAndDeleteButtons.getChildren().addAll(deleteButton, backButtonOwner);
         vBox_ownerBookScreen.getChildren().add(BackAndDeleteButtons);
         
         Scene owner_book_screen = new Scene(vBox_ownerBookScreen, Color.BEIGE);
         
-        /******************************************************************* Owner-Customer-Screen Scene *******************************************************************/
-        ObservableList<Customer> customerListObservable = FXCollections.observableArrayList(theCustomers.getCustomerList()); 
+        /******************************************************************* Owner-Book-Screen Scene *******************************************************************/
+        ObservableList<Customer> customerListObservable = FXCollections.observableArrayList(theCustomers.getCustomerList());
         
         VBox vBox_ownerCustomerScreen = new VBox(10); //root-node of owner_book_screen
         
-        TableView<Customer> customerTable = new TableView<>();
+        //Creating the customer table//
+        TableView<Customer> customerTable = new TableView<>();        
+        customerTable.setPrefSize(200, 400);
         
-        TableColumn<Customer, String> CustomerNameColumn = new TableColumn<>("Username");
+        //Creating the customer username column//
+        TableColumn<Customer, String> customerNameColumn = new TableColumn<>("Username");
+        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        
+        //Creating the customer password column//
         TableColumn<Customer, String> customerPasswordColumn = new TableColumn<>("Password");
-        TableColumn<Customer, Double> customerPointsColumn = new TableColumn<>("Points");
-        
-        CustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
         customerPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+        
+        //Creating the customer points column//
+        TableColumn<Customer, Integer> customerPointsColumn = new TableColumn<>("Points");
         customerPointsColumn.setCellValueFactory(new PropertyValueFactory<>("points"));
         
-        customerTable.getColumns().addAll(CustomerNameColumn, customerPasswordColumn, customerPointsColumn);
+        //Populating the table//
+        customerTable.getColumns().addAll(customerNameColumn, customerPasswordColumn, customerPointsColumn);
         vBox_ownerCustomerScreen.getChildren().add(customerTable);
         
         customerTable.setItems(customerListObservable);
         
-        TextField newCustomerToAddTextField_name = new TextField();
-        newCustomerToAddTextField_name.setPromptText("Name");        
+        //Prompts for creating a new user and adding it to the table//
+        TextField newCustomerToAddTextField_username = new TextField();
+        newCustomerToAddTextField_username.setPromptText("Username");        
         TextField newCustomerToAddTextField_password = new TextField();
-        newCustomerToAddTextField_password.setPromptText("Password");        
+        newCustomerToAddTextField_password.setPromptText("Password");
         Button newCustomerToAdd_addButton = new Button("Add");        
-        HBox newCustomersToAdd_InputFields = new HBox(10);        
-        newCustomersToAdd_InputFields.getChildren().addAll(newCustomerToAddTextField_name, newCustomerToAddTextField_password, newCustomerToAdd_addButton);        
-        vBox_ownerCustomerScreen.getChildren().add(newCustomersToAdd_InputFields);
-                        
-        Button deleteCustomerButton = new Button("Delete");
-        Button backBtn_fromOwnerCustomerScreen = new Button("Back");
+        HBox newCustomerToAddInputFields = new HBox(10);        
+        newCustomerToAddInputFields.getChildren().addAll(newCustomerToAddTextField_username, newCustomerToAddTextField_password, newCustomerToAdd_addButton);
+        
+        vBox_ownerCustomerScreen.getChildren().add(newCustomerToAddInputFields);
+        
+        //Delete button for deleting a customer from the table//
+        Button deleteButton2 = new Button("Delete");
+        
+        //Button for returning to the previous scene//
+        Button backButtonOwner2 = new Button("Back");
+        
+        HBox BackAndDeleteButtons2 = new HBox(10);
+        BackAndDeleteButtons2.getChildren().addAll(deleteButton2, backButtonOwner2);
+        vBox_ownerCustomerScreen.getChildren().add(BackAndDeleteButtons2);
+        
+        Scene owner_customer_screen = new Scene(vBox_ownerCustomerScreen, Color.BEIGE);
+        
+        /******************************************************************* Customer-Start-Screen Scene *******************************************************************/
+        GridPane grid_customerScreen = new GridPane();
+        
+        grid_customerScreen.setAlignment(Pos.CENTER);        
+        grid_customerScreen.setVgap(20);
+                
+        Text customerScreenTitle = new Text("Welcome [name]. You have [P] points. Your status is [S]");
+        customerScreenTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        grid_customerScreen.add(customerScreenTitle, 0, 0, 2, 1);
         
         
-        HBox BackAndDeleteButtons3 = new HBox(10);
-        BackAndDeleteButtons3.getChildren().addAll(deleteCustomerButton, backBtn_fromOwnerCustomerScreen);
-        vBox_ownerCustomerScreen.getChildren().add(BackAndDeleteButtons3);
         
-        Scene owner_customers_screen = new Scene(vBox_ownerCustomerScreen, Color.BEIGE);
+        Scene customer_start_screen = new Scene(grid_customerScreen, Color.BEIGE);
+        
+        
+        
+        
+        
+        
+        
+        
         
         /******************************************** Stage Stuff ************************************************************/
         primaryStage.getIcons().add(book_png);
@@ -220,23 +260,27 @@ public class Project_GUI extends Application
         
         /********************************************************************* GUI FUNCTIONALITY *******************************************************************/
         loginBtn.setOnAction(loginEvent -> {
-            processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen);
+            processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen, customer_start_screen, customerScreenTitle);
         }); 
         login_screen.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen);
+                processLogin(primaryStage, loginTextField, loginPasswordField, login_screen, owner_start_screen, customer_start_screen, customerScreenTitle);
                 event.consume();
             }
         });
         
         ownerScreen_logoutButton.setOnAction(logoutEvent -> {
             primaryStage.setScene(login_screen);
+            loginTextField.clear();
+            loginPasswordField.clear();
         });
         
-        ownerScreen_viewBooksButton.setOnAction(booksPressEvent -> primaryStage.setScene(owner_book_screen));        
-        ownerScreen_viewCustomerButton.setOnAction(customersPressEvent -> primaryStage.setScene(owner_customers_screen));
+        ownerScreen_viewBooksButton.setOnAction(booksPressEvent -> primaryStage.setScene(owner_book_screen));
+        ownerScreen_viewCustomerButton.setOnAction(customersPressEvent -> primaryStage.setScene(owner_customer_screen));
         
-        deleteBookButton.setOnAction(deleteEvent -> {
+        //Owner book table button functionalities//
+        //Delete book button//
+        deleteButton.setOnAction(deleteEvent -> {
             Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
             if (selectedBook != null) {
                 bookListObservable.remove(selectedBook);                
@@ -248,7 +292,9 @@ public class Project_GUI extends Application
                     ex.printStackTrace();
                 }
             }
-        });        
+        });
+        
+        //Add book button//
         newBookToAdd_addButton.setOnAction(addEvent -> {
             String newBookName = newBookToAddTextField_name.getText();
             double newBookPrice;
@@ -270,31 +316,35 @@ public class Project_GUI extends Application
 
             newBookToAddTextField_name.clear();
             newBookToAddTextField_price.clear();
-        });        
-        backBtn_fromOwnerBookScreen.setOnAction(backEvent -> {
+        });
+        
+        //Return to previous scene button//
+        backButtonOwner.setOnAction(backEvent -> {
             primaryStage.setScene(owner_start_screen);
         });
         
-        deleteCustomerButton.setOnAction(deleteEvent -> {
+        //Owner customer table button functionalities///
+        //Delete customer button//
+        deleteButton2.setOnAction(deleteEvent -> {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             if (selectedCustomer != null) {
                 customerListObservable.remove(selectedCustomer);                
-                theCustomers.removeCustomer(selectedCustomer);
-                // Save the updated customer list to the customer text-file
+                theCustomers.removeCustomer(selectedCustomer);                
+                // Save the updated book list to the books text-file
                 try {
                     theCustomers.UpdateCustomerFile("customers.txt");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             }
-        });        
+        });
+        
+        //Add customer button//
         newCustomerToAdd_addButton.setOnAction(addEvent -> {
-            String newCustomerName = newCustomerToAddTextField_name.getText();
-            String newCustomerPassword = newCustomerToAddTextField_password.getText();
-          
-            Customer newCustomer = new Customer(newCustomerName, newCustomerPassword);
-            newCustomer.UpdateStatus();
-            
+            String newUserName = newCustomerToAddTextField_username.getText();
+            String newPassword = newCustomerToAddTextField_password.getText();
+
+            Customer newCustomer = new Customer(newUserName, newPassword);
             theCustomers.addCustomer(newCustomer);
             customerListObservable.add(newCustomer);
             try {
@@ -302,18 +352,20 @@ public class Project_GUI extends Application
             } catch (IOException ex) {
                     ex.printStackTrace();
             }
-                        
-            newCustomerToAddTextField_name.clear();
+
+            newCustomerToAddTextField_username.clear();
             newCustomerToAddTextField_password.clear();
         });
-        backBtn_fromOwnerCustomerScreen.setOnAction(backEvent -> {
+        
+        //Return to previous scene button//
+        backButtonOwner2.setOnAction(backEvent -> {
             primaryStage.setScene(owner_start_screen);
         });
     }
     
     /*********************************************************************** Start Method Above ********************************************************************************/
     
-    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene login_screen, Scene owner_start_screen) {
+    private void processLogin(Stage primaryStage, TextField loginTextField, PasswordField loginPasswordField, Scene login_screen, Scene owner_start_screen, Scene customer_start_screen, Text customerScreenTitle) {
         String usernameInput = loginTextField.getText();
         String passwordInput = loginPasswordField.getText();
 
@@ -342,29 +394,41 @@ public class Project_GUI extends Application
         
         ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
         
-        TableView<Book> bookTableForCustomer = new TableView<>();        
+        //Creates the book table for customers//
+        TableView<Book> bookTableForCustomer = new TableView<>();    
+        
+        //Creating and formatting the book name column//
         TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
         bookNameColumn.setCellValueFactory(new PropertyValueFactory<>("bookName"));
+        bookNameColumn.setMinWidth(150);
+        bookNameColumn.setStyle("-fx-alignment: CENTER;");
         
+        //Creating and formatting the book price column//
         TableColumn<Book, Double> bookPriceColumn = new TableColumn<>("Book Price");
         bookPriceColumn.setCellValueFactory(new PropertyValueFactory<>("bookPrice"));
+        bookPriceColumn.setStyle("-fx-alignment: CENTER;");
         
+        //Creating and formatting the select column//
         TableColumn<Book, Boolean> selectColumn = new TableColumn<>("Select");
         selectColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectColumn.setCellFactory(param -> new CheckBoxTableCell<>());
         selectColumn.setEditable(true);
         
+        //Gets rid of the empty space on the right side of the table//
+        bookTableForCustomer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
+        //Populates the customer book table//
         bookTableForCustomer.getColumns().addAll(bookNameColumn, bookPriceColumn, selectColumn);
         bookTableForCustomer.setEditable(true);
         layout.getChildren().add(bookTableForCustomer);
         
         bookTableForCustomer.setItems(bookListObservable);
         
-        HBox BuyAndRemeemButtons = new HBox(10);
+        HBox BuyAndRedeemButtons = new HBox(10);
         Button buyButton = new Button("Buy");
         Button redeemButton = new Button("Redeem with Points");
-        BuyAndRemeemButtons.getChildren().addAll(buyButton, redeemButton);
-        layout.getChildren().add(BuyAndRemeemButtons);
+        BuyAndRedeemButtons.getChildren().addAll(buyButton, redeemButton);
+        layout.getChildren().add(BuyAndRedeemButtons);
                 
         Button customerLogOutButton = new Button("Logout");
         layout.getChildren().add(customerLogOutButton);
@@ -378,16 +442,15 @@ public class Project_GUI extends Application
                 if (book.isSelected()) {
                     selectedBooks.add(book);
                     totalCost += book.getBookPrice();
-                    theBooks.removeBook(book);                    
+                    theBooks.removeBook(book);
+                    try {
+                        theBooks.UpdateBookFile("books.txt");
+                        
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
-            
-            try {
-            theBooks.UpdateBookFile("books.txt");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            
             Scene customer_cost_screen = createCustomerCostScreen_Scene(selectedBooks, totalCost, customer, primaryStage, login_screen);
             primaryStage.setScene(customer_cost_screen);
         });
@@ -399,15 +462,15 @@ public class Project_GUI extends Application
                 if (book.isSelected()) {
                     selectedBooks.add(book);
                     preDiscountCAD += book.getBookPrice();
-                    theBooks.removeBook(book);                   
+                    theBooks.removeBook(book);
+                    try {
+                        
+                        theBooks.UpdateBookFile("books.txt");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
-            try {
-            theBooks.UpdateBookFile("books.txt");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            
             int pointsToCAD = customer.getPoints()/100;
             double costAfterPoints = preDiscountCAD;
             
@@ -420,12 +483,6 @@ public class Project_GUI extends Application
                 customer.removePoints(preDiscountCAD*100); //some points still remaining = preTransactionPoints - preDiscountCAD*10
                 costAfterPoints = 0; //full cost handled by points
             }            
-            
-            try {
-                theCustomers.UpdateCustomerFile("customers.txt");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
             
             Scene customer_cost_screen = createCustomerCostScreen_Scene(selectedBooks, costAfterPoints, customer, primaryStage, login_screen);
             primaryStage.setScene(customer_cost_screen);
