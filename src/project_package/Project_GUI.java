@@ -40,7 +40,7 @@ public class Project_GUI extends Application
 {
     public Owner owner = Owner.getInstance("admin", "admin");
     private CustomerList theCustomers;    
-    private BookStore theBooks;
+    private BookList theBooks;
             
     public static void main(String[] args){
         launch(args);
@@ -67,7 +67,7 @@ public class Project_GUI extends Application
         
         /**************************** initial loading of the customer and books info *********************************/
         theCustomers = new CustomerList();
-        theBooks = new BookStore();
+        theBooks = new BookList();
         try {
             theCustomers.LoadCustomersFromFile("customers.txt");
             theBooks.LoadBooksFromFile("books.txt");
@@ -345,6 +345,7 @@ public class Project_GUI extends Application
             String newPassword = newCustomerToAddTextField_password.getText();
 
             Customer newCustomer = new Customer(newUserName, newPassword);
+            newCustomer.UpdateStatus();
             theCustomers.addCustomer(newCustomer);
             customerListObservable.add(newCustomer);
             try {

@@ -16,3 +16,5 @@ SafwanHossain	whoGoesThere1	0
 YousifNasser	password89	200
 customer	password	2320
 1	1	1990
+2	2	1400
+majed	123	0
