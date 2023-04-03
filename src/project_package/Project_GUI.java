@@ -38,9 +38,11 @@ import javafx.stage.Stage;
 
 public class Project_GUI extends Application
 {
-    public Owner owner = Owner.getInstance("admin", "admin");
+    public User owner = Owner.getInstance("admin", "admin");
     private CustomerList theCustomers;    
     private BookList theBooks;
+    private TableView<Book> bookTable;
+    private ObservableList<Book> bookListObservable;
             
     public static void main(String[] args){
         launch(args);
@@ -133,12 +135,14 @@ public class Project_GUI extends Application
         
         /******************************************************************* Owner-Book-Screen Scene *******************************************************************/
         //JavaFX-specific list implementation that allows listeners to track changes in the list
-        ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
+        //ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
+        bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
         
         VBox vBox_ownerBookScreen = new VBox(10); //root-node of owner_book_screen
         
         //Creating the book table//
-        TableView<Book> bookTable = new TableView<>();        
+        //TableView<Book> bookTable = new TableView<>();
+        bookTable = new TableView<>();
         bookTable.setPrefSize(200, 400); 
         //Creating the book name column//
         TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
@@ -382,6 +386,12 @@ public class Project_GUI extends Application
         else {System.out.println("Wrong username and/or password");}
     }
     
+    void refreshOwnerBookTable() {
+        bookTable.getItems().clear();
+        bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents());
+        bookTable.setItems(bookListObservable);
+    }
+    
     public Scene createCustomerStartScreen_Scene(Customer loggedOnCustomer, Stage primaryStage, Scene login_screen){        
         Customer customer = loggedOnCustomer;
         
@@ -396,7 +406,7 @@ public class Project_GUI extends Application
         ObservableList<Book> bookListObservable = FXCollections.observableArrayList(theBooks.getBookComponents()); 
         
         //Creates the book table for customers//
-        TableView<Book> bookTableForCustomer = new TableView<>();    
+        TableView<Book> customerBookTable = new TableView<>();
         
         //Creating and formatting the book name column//
         TableColumn<Book, String> bookNameColumn = new TableColumn<>("Book Name");
@@ -416,14 +426,14 @@ public class Project_GUI extends Application
         selectColumn.setEditable(true);
         
         //Gets rid of the empty space on the right side of the table//
-        bookTableForCustomer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        customerBookTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         //Populates the customer book table//
-        bookTableForCustomer.getColumns().addAll(bookNameColumn, bookPriceColumn, selectColumn);
-        bookTableForCustomer.setEditable(true);
-        layout.getChildren().add(bookTableForCustomer);
+        customerBookTable.getColumns().addAll(bookNameColumn, bookPriceColumn, selectColumn);
+        customerBookTable.setEditable(true);
+        layout.getChildren().add(customerBookTable);
         
-        bookTableForCustomer.setItems(bookListObservable);
+        customerBookTable.setItems(bookListObservable);
         
         HBox BuyAndRedeemButtons = new HBox(10);
         Button buyButton = new Button("Buy");
@@ -452,6 +462,8 @@ public class Project_GUI extends Application
                     }
                 }
             }
+            refreshOwnerBookTable();
+            
             Scene customer_cost_screen = createCustomerCostScreen_Scene(selectedBooks, totalCost, customer, primaryStage, login_screen);
             primaryStage.setScene(customer_cost_screen);
         });
@@ -472,6 +484,8 @@ public class Project_GUI extends Application
                     }
                 }
             }
+            refreshOwnerBookTable();
+            
             int pointsToCAD = customer.getPoints()/100;
             double costAfterPoints = preDiscountCAD;
             

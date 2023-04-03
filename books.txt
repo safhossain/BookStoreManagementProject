@@ -43,7 +43,3 @@ test5	50.0
 test6	60.0
 test7	70.0
 test8	80.0
-test9	90.0
-test10	100.0
-test11	110.0
-test12	120.0
