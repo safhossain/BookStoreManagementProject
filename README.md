@@ -1,5 +1,4 @@
-#COE528-W2023_Project : Bookstore Management System
-Rudimentary Book Store Final Java Project for COE528-W2023
+Rudimentary Bookstore Management System Java Project
 
 Project implemented the following OOP principles:
 - Design Patterns (Singleton + Observable Design Patterns)
