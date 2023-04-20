@@ -12,7 +12,4 @@ LilyMoore	Cherry2	890
 BenjaminLee	Blackberry5	6870
 AvaAllen	Plum1	3290
 JacobDavis	Banana3	490
-SafwanHossain	whoGoesThere1	0
-YousifNasser	password89	200
 customer	password	2320
-safwan	safwan	2700
