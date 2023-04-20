@@ -19,8 +19,8 @@ Note: Not exactly implementing the "State Design-Pattern"
 Note: To run the project, ensure you have JDK and JavaFX installed
 Note: Used Netbeans 8.2 IDE to create project
 
-![image](https://user-images.githubusercontent.com/61558794/233460669-9fd35ca9-6459-4b6b-ab78-f066e00d45d5.png)
+![image](https://user-images.githubusercontent.com/61558794/233463023-e507de3e-1355-4486-8113-808703cd365b.png)
 
-![image](https://user-images.githubusercontent.com/61558794/233461624-e995bc44-01e7-49a1-81fe-d94eee4d0d91.png)
+![image](https://user-images.githubusercontent.com/61558794/233463064-9d58fbc4-a954-43f3-8046-b40fb48a9902.png)
 
-![image](https://user-images.githubusercontent.com/61558794/233461651-d47cde19-774f-4b7b-8693-13a7abe7006a.png)
+![image](https://user-images.githubusercontent.com/61558794/233463089-82271573-194d-4793-87aa-a8117bd5ee71.png)
